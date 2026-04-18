@@ -6,11 +6,11 @@
 -- USERS (Password: Test@123 for all users)
 -- ============================================
 INSERT INTO users (id, email, password_hash, first_name, last_name, phone, role, is_active) VALUES
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@example.com', '$2a$10$rqQZ7uCQxZ4vV4kV6dI8GuKFhBhqKGJ4mVrXhZjvCJ6v0nGqPKVq2', 'Admin', 'User', '+1-555-0100', 'admin', true),
-('b1ffcd99-9c0b-4ef8-bb6d-6bb9bd380a22', 'manager@example.com', '$2a$10$rqQZ7uCQxZ4vV4kV6dI8GuKFhBhqKGJ4mVrXhZjvCJ6v0nGqPKVq2', 'John', 'Manager', '+1-555-0101', 'manager', true),
-('c2a0de99-9c0b-4ef8-bb6d-6bb9bd380a33', 'staff1@example.com', '$2a$10$rqQZ7uCQxZ4vV4kV6dI8GuKFhBhqKGJ4mVrXhZjvCJ6v0nGqPKVq2', 'Jane', 'Staff', '+1-555-0102', 'staff', true),
-('d3b1ef99-9c0b-4ef8-bb6d-6bb9bd380a44', 'staff2@example.com', '$2a$10$rqQZ7uCQxZ4vV4kV6dI8GuKFhBhqKGJ4mVrXhZjvCJ6v0nGqPKVq2', 'Bob', 'Worker', '+1-555-0103', 'staff', true),
-('e4c2fa99-9c0b-4ef8-bb6d-6bb9bd380a55', 'viewer@example.com', '$2a$10$rqQZ7uCQxZ4vV4kV6dI8GuKFhBhqKGJ4mVrXhZjvCJ6v0nGqPKVq2', 'Alice', 'Viewer', '+1-555-0104', 'viewer', true);
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@example.com', '$2a$10$Saen/XFgTEwOyGe7eGsivuf8VY.MvhkXZyJbruZyjLVSGx14M2EIe', 'Admin', 'User', '+1-555-0100', 'admin', true),
+('b1ffcd99-9c0b-4ef8-bb6d-6bb9bd380a22', 'manager@example.com', '$2a$10$Saen/XFgTEwOyGe7eGsivuf8VY.MvhkXZyJbruZyjLVSGx14M2EIe', 'John', 'Manager', '+1-555-0101', 'manager', true),
+('c2a0de99-9c0b-4ef8-bb6d-6bb9bd380a33', 'staff1@example.com', '$2a$10$Saen/XFgTEwOyGe7eGsivuf8VY.MvhkXZyJbruZyjLVSGx14M2EIe', 'Jane', 'Staff', '+1-555-0102', 'staff', true),
+('d3b1ef99-9c0b-4ef8-bb6d-6bb9bd380a44', 'staff2@example.com', '$2a$10$Saen/XFgTEwOyGe7eGsivuf8VY.MvhkXZyJbruZyjLVSGx14M2EIe', 'Bob', 'Worker', '+1-555-0103', 'staff', true),
+('e4c2fa99-9c0b-4ef8-bb6d-6bb9bd380a55', 'viewer@example.com', '$2a$10$Saen/XFgTEwOyGe7eGsivuf8VY.MvhkXZyJbruZyjLVSGx14M2EIe', 'Alice', 'Viewer', '+1-555-0104', 'viewer', true);
 
 -- ============================================
 -- ROLES

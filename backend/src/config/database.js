@@ -46,12 +46,12 @@ const sequelize = process.env.DATABASE_URL
           createdAt: 'created_at',
           updatedAt: 'updated_at',
         },
-        dialectOptions: {
+        dialectOptions: process.env.NODE_ENV === 'production' ? {
           ssl: {
             require: true,
             rejectUnauthorized: false,
           },
-        },
+        } : {},
       }
     );
 

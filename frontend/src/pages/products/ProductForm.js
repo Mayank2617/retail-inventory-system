@@ -42,8 +42,9 @@ const ProductForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [saving, setSaving] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(false);
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(productSchema),
     defaultValues: {
       name: '',
@@ -59,6 +60,37 @@ const ProductForm = () => {
       reorder_quantity: 0
     }
   });
+
+  React.useEffect(() => {
+    if (id) {
+      const fetchProduct = async () => {
+        setLoadingProduct(true);
+        try {
+          const response = await api.get(`/products/${id}`);
+          const product = response.data.data || response.data;
+          reset({
+            name: product.name || '',
+            sku: product.sku || '',
+            barcode: product.barcode || '',
+            category_id: product.category_id || '',
+            unit_price: product.unit_price || '',
+            cost_price: product.cost_price || '',
+            is_active: product.is_active !== undefined ? product.is_active : true,
+            description: product.description || '',
+            min_stock_level: product.min_stock_level || 0,
+            reorder_point: product.reorder_point || 0,
+            reorder_quantity: product.reorder_quantity || 0
+          });
+        } catch (err) {
+          toast.error('Failed to load product details');
+          navigate('/products');
+        } finally {
+          setLoadingProduct(false);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id, reset, navigate]);
 
   const onSubmit = async (data) => {
     setSaving(true);
@@ -92,10 +124,15 @@ const ProductForm = () => {
         {id ? 'Edit Product' : 'Add New Product'}
       </Typography>
 
-      <Card sx={{ mt: 3 }}>
-        <CardContent>
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
+      {loadingProduct ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Card sx={{ mt: 3 }}>
+          <CardContent>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Controller
                   name="name"
@@ -237,10 +274,11 @@ const ProductForm = () => {
                   </Button>
                 </Box>
               </Grid>
-            </Grid>
-          </Box>
-        </CardContent>
-      </Card>
+              </Grid>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 };

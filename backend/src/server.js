@@ -30,7 +30,24 @@ app.set('trust proxy', 1);
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Automatically allow localhost and ANY Vercel preview/production domains
+    if (origin.match(/^http:\/\/localhost:\d+$/) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Fallback to explicit CORS_ORIGIN env variable (supports comma separated list)
+    const allowedOrigins = (process.env.CORS_ORIGIN || '').split(',').map(o => o.trim());
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    
+    // If none match, block the request
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 

@@ -17,8 +17,6 @@ const Settings = () => {
     smsNotifications: false,
     lowStockAlerts: true,
     weeklyReports: true,
-    darkMode: false,
-    compactView: false,
   });
 
   const handleToggle = (setting) => () => {
@@ -101,35 +99,6 @@ const Settings = () => {
           </ListItem>
         </List>
 
-        <Divider sx={{ borderWidth: 4, borderColor: 'background.default' }} />
-
-        <List subheader={<Typography variant="h6" sx={{ p: 2, pb: 1 }}>Display Preferences</Typography>}>
-          <ListItem>
-            <ListItemSecondaryAction>
-              <Switch
-                edge="end"
-                checked={settings.darkMode}
-                onChange={handleToggle('darkMode')}
-                color="primary"
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText
-              primary="Compact List View"
-              secondary="Reduce spacing in tables to show more items"
-            />
-            <ListItemSecondaryAction>
-              <Switch
-                edge="end"
-                checked={settings.compactView}
-                onChange={handleToggle('compactView')}
-                color="primary"
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
       </Card>
     </Box>
   );

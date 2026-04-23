@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { createProduct, updateProduct } from '../../store/slices/productSlice';
 import {
   Box,
   Button,
@@ -40,6 +42,7 @@ const productSchema = yup.object().shape({
 
 const ProductForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [saving, setSaving] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(false);
@@ -96,15 +99,18 @@ const ProductForm = () => {
     setSaving(true);
     try {
       if (id) {
-        await api.put(`/products/${id}`, data);
+        await dispatch(updateProduct({ id, productData: data })).unwrap();
         toast.success('Product updated successfully');
       } else {
-        await api.post('/products', data);
+        await dispatch(createProduct(data)).unwrap();
         toast.success('Product created successfully');
       }
-      navigate('/products');
+      // Give Redux a tiny bit of time to ensure state is committed before navigating
+      setTimeout(() => {
+        navigate('/products');
+      }, 100);
     } catch (err) {
-      toast.error(err?.response?.data?.message || err.message || 'Failed to save product');
+      toast.error(err?.response?.data?.message || err.message || err || 'Failed to save product');
     } finally {
       setSaving(false);
     }

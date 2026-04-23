@@ -30,6 +30,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { getInventory, adjustInventory } from '../../store/slices/inventorySlice';
+import locationService from '../../services/locationService';
 
 const adjustSchema = yup.object().shape({
   quantity: yup.number().required('Quantity adjustment is required'),
@@ -43,6 +44,8 @@ const InventoryList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
+  const [locationFilter, setLocationFilter] = useState('');
+  const [locations, setLocations] = useState([]);
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(adjustSchema),
@@ -53,8 +56,12 @@ const InventoryList = () => {
   });
 
   useEffect(() => {
-    dispatch(getInventory());
-  }, [dispatch]);
+    locationService.getLocations().then(res => setLocations(res.data || [])).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    dispatch(getInventory(locationFilter ? { location_id: locationFilter } : {}));
+  }, [dispatch, locationFilter]);
 
   const getStockStatus = (item) => {
     const available = item.quantity_available;
@@ -121,19 +128,34 @@ const InventoryList = () => {
             Track inventory levels across all locations
           </Typography>
         </div>
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Filter Status</InputLabel>
-          <Select
-            value={statusFilter}
-            label="Filter Status"
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <MenuItem value="All">All Items</MenuItem>
-            <MenuItem value="In Stock">In Stock</MenuItem>
-            <MenuItem value="Reorder">Reorder</MenuItem>
-            <MenuItem value="Out of Stock">Out of Stock</MenuItem>
-          </Select>
-        </FormControl>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>Filter Location</InputLabel>
+            <Select
+              value={locationFilter}
+              label="Filter Location"
+              onChange={(e) => setLocationFilter(e.target.value)}
+            >
+              <MenuItem value="">All Locations</MenuItem>
+              {locations.map(loc => (
+                <MenuItem key={loc.id} value={loc.id}>{loc.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Filter Status</InputLabel>
+            <Select
+              value={statusFilter}
+              label="Filter Status"
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <MenuItem value="All">All Items</MenuItem>
+              <MenuItem value="In Stock">In Stock</MenuItem>
+              <MenuItem value="Reorder">Reorder</MenuItem>
+              <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
 
       <Card>

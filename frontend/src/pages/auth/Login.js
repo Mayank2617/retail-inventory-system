@@ -138,17 +138,7 @@ const Login = () => {
               {isLoading ? <CircularProgress size={24} /> : 'Sign In'}
             </Button>
 
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                <strong>Demo Credentials:</strong>
-              </Typography>
-              <Typography variant="caption" color="text.secondary" display="block">
-                Admin: admin@example.com / Test@123
-              </Typography>
-              <Typography variant="caption" color="text.secondary" display="block">
-                Manager: manager@example.com / Test@123
-              </Typography>
-            </Box>
+
           </Box>
         </CardContent>
       </Card>

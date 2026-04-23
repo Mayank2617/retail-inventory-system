@@ -62,6 +62,8 @@ const Reports = () => {
 
   const COLORS = ['#0088FE', '#FFBB28', '#FF8042', '#00C49F'];
 
+  const filteredOrderData = orderData.filter(d => d.count > 0);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Typography variant="h4" gutterBottom fontWeight="600">
@@ -92,24 +94,31 @@ const Reports = () => {
             <Typography variant="h6" gutterBottom>
               Recent Order Status Distribution
             </Typography>
-            <ResponsiveContainer width="100%" height="90%">
-              <PieChart>
-                <Pie
-                  data={orderData.filter(d => d.count > 0)}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={120}
-                  fill="#8884d8"
-                  dataKey="count"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {orderData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            
+            {filteredOrderData.length === 0 ? (
+              <Box sx={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                <Typography color="text.secondary">No active orders available to graph.</Typography>
+              </Box>
+            ) : (
+              <ResponsiveContainer width="100%" height="90%">
+                <PieChart>
+                  <Pie
+                    data={filteredOrderData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="count"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {filteredOrderData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </Card>
         </Grid>
       </Grid>

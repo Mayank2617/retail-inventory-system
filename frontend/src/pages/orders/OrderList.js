@@ -24,7 +24,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
-import { Add as AddIcon, Visibility, Edit } from '@mui/icons-material';
+import { Add as AddIcon, Edit } from '@mui/icons-material';
 import { getOrders, updateOrderStatus } from '../../store/slices/orderSlice';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';

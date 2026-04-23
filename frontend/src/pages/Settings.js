@@ -8,7 +8,6 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Switch,
-  Divider,
 } from '@mui/material';
 
 const Settings = () => {

@@ -1,4 +1,4 @@
-const { Product, Category } = require('../models');
+const { Product, Category, Location, Inventory } = require('../models');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/response');
 const { Op } = require('sequelize');
 
@@ -95,6 +95,23 @@ const getProduct = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   try {
     const product = await Product.create(req.body);
+
+    // Automatically seed an Inventory record with 0 quantity for each warehouse location
+    const locations = await Location.findAll();
+    
+    if (locations && locations.length > 0) {
+      const inventoryRecords = locations.map((location) => ({
+        product_id: product.id,
+        location_id: location.id,
+        quantity_available: 0,
+        quantity_reserved: 0,
+        quantity_in_transit: 0,
+        last_adjustment_reason: 'Initial product creation',
+        updated_by: req.user ? req.user.id : null
+      }));
+      
+      await Inventory.bulkCreate(inventoryRecords);
+    }
 
     const productWithCategory = await Product.findByPk(product.id, {
       include: [

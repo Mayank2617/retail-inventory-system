@@ -25,6 +25,7 @@ const orderSchema = yup.object().shape({
   customer_id: yup.string().uuid('Customer ID must be a valid UUID').nullable().transform(value => value || null),
   location_id: yup.string().required('Location is required'),
   status: yup.string().required('Status is required'),
+  total_amount: yup.number().typeError('Amount must be a number').min(0, 'Amount cannot be negative').required('Order amount is required'),
   notes: yup.string()
 });
 
@@ -52,6 +53,7 @@ const OrderForm = () => {
       customer_id: '',
       location_id: '',
       status: 'pending',
+      total_amount: 0,
       notes: '',
     }
   });
@@ -133,6 +135,23 @@ const OrderForm = () => {
                         <MenuItem value="" disabled>No locations available</MenuItem>
                       )}
                     </TextField>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="total_amount"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      type="number"
+                      label="Order Amount ($)"
+                      error={!!errors.total_amount}
+                      helperText={errors.total_amount?.message}
+                      InputProps={{ inputProps: { min: 0, step: "0.01" } }}
+                    />
                   )}
                 />
               </Grid>

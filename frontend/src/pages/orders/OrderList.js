@@ -115,7 +115,6 @@ const OrderList = () => {
               <TableRow>
                 <TableCell>Order #</TableCell>
                 <TableCell>Date</TableCell>
-                <TableCell>Customer</TableCell>
                 <TableCell>Location</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell align="right">Amount</TableCell>
@@ -125,7 +124,7 @@ const OrderList = () => {
             <TableBody>
               {(!orders || orders.length === 0) ? (
                 <TableRow>
-                  <TableCell colSpan={7} align="center">
+                  <TableCell colSpan={6} align="center">
                     <Typography color="text.secondary" sx={{ py: 3 }}>
                       No orders found
                     </Typography>
@@ -141,20 +140,6 @@ const OrderList = () => {
                     </TableCell>
                     <TableCell>
                       {format(new Date(order.order_date), 'MMM dd, yyyy')}
-                    </TableCell>
-                    <TableCell>
-                      {order.customer ? (
-                        <>
-                          <Typography variant="body2">
-                            {order.customer.first_name} {order.customer.last_name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {order.customer.email}
-                          </Typography>
-                        </>
-                      ) : (
-                        '-'
-                      )}
                     </TableCell>
                     <TableCell>{order.location?.name || '-'}</TableCell>
                     <TableCell>
@@ -172,9 +157,6 @@ const OrderList = () => {
                     <TableCell align="center">
                       <IconButton size="small" onClick={() => handleOpenStatusEdit(order)} title="Quick Edit Status">
                         <Edit fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => navigate(`/orders/${order.id}`)} title="View Details">
-                        <Visibility fontSize="small" />
                       </IconButton>
                     </TableCell>
                   </TableRow>

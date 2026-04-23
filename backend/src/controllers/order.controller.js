@@ -108,12 +108,18 @@ const createOrder = async (req, res, next) => {
 
     // Calculate totals
     let subtotal = 0;
-    items.forEach((item) => {
-      subtotal += item.quantity * item.unit_price;
-    });
+    let tax_amount = 0;
+    let total_amount = parseFloat(orderData.total_amount) || 0;
 
-    const tax_amount = subtotal * 0.09; // 9% tax
-    const total_amount = subtotal + tax_amount + (orderData.shipping_cost || 0);
+    if (items && items.length > 0) {
+      items.forEach((item) => {
+        subtotal += item.quantity * item.unit_price;
+      });
+      tax_amount = subtotal * 0.09; // 9% tax
+      total_amount = subtotal + tax_amount + (parseFloat(orderData.shipping_cost) || 0);
+    } else {
+      subtotal = total_amount; // Fallback for DB constraints
+    }
 
     // Generate order number
     const orderCount = await SalesOrder.count();

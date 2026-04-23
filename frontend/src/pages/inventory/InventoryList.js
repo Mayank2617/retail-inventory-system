@@ -19,6 +19,10 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
@@ -38,6 +42,7 @@ const InventoryList = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(adjustSchema),
@@ -56,9 +61,9 @@ const InventoryList = () => {
     const reorderPoint = item.product?.reorder_point || 0;
     const minStock = item.product?.min_stock_level || 0;
 
-    if (available <= minStock) return { label: 'Low', color: 'error' };
+    if (available <= minStock) return { label: 'Out of Stock', color: 'error' };
     if (available <= reorderPoint) return { label: 'Reorder', color: 'warning' };
-    return { label: 'OK', color: 'success' };
+    return { label: 'In Stock', color: 'success' };
   };
 
   const handleOpenAdjust = (item) => {
@@ -84,11 +89,18 @@ const InventoryList = () => {
         reason: data.reason
       })).unwrap();
       toast.success('Inventory adjusted successfully');
+      dispatch(getInventory()); // Refresh data to immediately update status
       onClose();
     } catch (err) {
       toast.error(err || 'Failed to adjust inventory');
     }
   };
+
+  const filteredInventory = inventory?.filter((item) => {
+    if (statusFilter === 'All') return true;
+    const status = getStockStatus(item);
+    return status.label === statusFilter;
+  });
 
   if (isLoading && !openDialog) {
     return (
@@ -109,6 +121,19 @@ const InventoryList = () => {
             Track inventory levels across all locations
           </Typography>
         </div>
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>Filter Status</InputLabel>
+          <Select
+            value={statusFilter}
+            label="Filter Status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="All">All Items</MenuItem>
+            <MenuItem value="In Stock">In Stock</MenuItem>
+            <MenuItem value="Reorder">Reorder</MenuItem>
+            <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       <Card>
@@ -127,7 +152,7 @@ const InventoryList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {(!inventory || inventory.length === 0) ? (
+              {(!filteredInventory || filteredInventory.length === 0) ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
                     <Typography color="text.secondary" sx={{ py: 3 }}>
@@ -136,7 +161,7 @@ const InventoryList = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                inventory.map((item) => {
+                filteredInventory.map((item) => {
                   const status = getStockStatus(item);
                   return (
                     <TableRow key={item.id} hover>

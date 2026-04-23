@@ -108,13 +108,16 @@ const Dashboard = () => {
       icon: <AttachMoney sx={{ color: 'info.main' }} />,
       color: 'info',
     },
-    {
+  ];
+
+  if (localStorage.getItem('hideLowStockAlerts') !== 'true') {
+    statCards.push({
       title: 'Low Stock Items',
       value: stats?.lowStockItems?.toString() || '0',
       icon: <Warning sx={{ color: 'warning.main' }} />,
       color: 'warning',
-    },
-  ];
+    });
+  }
 
   return (
     <Box>

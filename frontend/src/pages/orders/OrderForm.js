@@ -89,23 +89,7 @@ const OrderForm = () => {
               Order Details
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="customer_id"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label="Customer ID (Optional)"
-                      placeholder="Enter Customer UUID if known"
-                      error={!!errors.customer_id}
-                      helperText={errors.customer_id?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <Controller
                   name="status"
                   control={control}

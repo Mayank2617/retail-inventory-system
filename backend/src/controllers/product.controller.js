@@ -173,10 +173,22 @@ const deleteProduct = async (req, res, next) => {
       return errorResponse(res, 'Product not found', 404);
     }
 
-    // Soft delete by setting is_active to false
-    await product.update({ is_active: false });
-
-    successResponse(res, null, 'Product deleted successfully');
+    try {
+      // First delete associated inventory tracking records
+      const { Inventory } = require('../models');
+      await Inventory.destroy({ where: { product_id: product.id } });
+      
+      // Then hard delete the product
+      await product.destroy();
+      return successResponse(res, null, 'Product permanently deleted');
+    } catch (dbError) {
+      // If it fails (e.g. Foreign Key Constraint from Sales Orders), fallback to soft delete
+      if (dbError.name === 'SequelizeForeignKeyConstraintError') {
+        await product.update({ is_active: false });
+        return successResponse(res, null, 'Product is tied to sales orders and was deactivated instead');
+      }
+      throw dbError; // re-throw if it's another error
+    }
   } catch (error) {
     next(error);
   }

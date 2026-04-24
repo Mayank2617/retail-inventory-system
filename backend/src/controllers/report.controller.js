@@ -1,5 +1,6 @@
 const { sequelize, Product, SalesOrder, Inventory } = require('../models');
 const { successResponse } = require('../utils/response');
+const { Op } = require('sequelize');
 
 /**
  * @desc    Get dashboard stats
@@ -23,7 +24,10 @@ const getDashboardStats = async (req, res, next) => {
         {
           model: Product,
           as: 'product',
-          where: sequelize.literal('"Inventory"."quantity_available" <= "product"."reorder_point"'),
+          where: {
+            is_active: true,
+            [Op.and]: sequelize.literal('"Inventory"."quantity_available" <= "product"."reorder_point"')
+          },
         },
       ],
     });

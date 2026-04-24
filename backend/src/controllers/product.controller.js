@@ -182,10 +182,9 @@ const deleteProduct = async (req, res, next) => {
       await product.destroy();
       return successResponse(res, null, 'Product permanently deleted');
     } catch (dbError) {
-      // If it fails (e.g. Foreign Key Constraint from Sales Orders), fallback to soft delete
+      // If it fails due to Foreign Key Constraint (e.g. Sales Orders), return a 400 error so the frontend doesn't fake-hide it
       if (dbError.name === 'SequelizeForeignKeyConstraintError') {
-        await product.update({ is_active: false });
-        return successResponse(res, null, 'Product is tied to sales orders and was deactivated instead');
+        return errorResponse(res, 'Cannot permanently delete this product because it is tied to historical sales orders. Please edit the product and set it to Inactive instead.', 400);
       }
       throw dbError; // re-throw if it's another error
     }
